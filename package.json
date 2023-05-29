@@ -1,5 +1,5 @@
 {
-  "name": "operatora",
+  "name": "sektor",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "mqtt": "^4.3.7",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
