@@ -1,22 +1,20 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import Terminals from '../components/Terminals.vue'
 import Sectors from '../components/Sectors.vue'
 
-const data = reactive({
-    tid: undefined,
-})
+const tid = ref(undefined)
 
 </script>
 
 <template>
     <main>
-        <Terminals v-if="data.tid === undefined"
-            @terminal-selected="$event => data.tid = $event" 
+        <Terminals v-if="tid === undefined"
+            @terminal-selected="$event => tid = $event" 
         />
         <Sectors v-else 
-            :terminal-id="data.tid"
-            @back="data.tid = undefined"
+            :terminal-id="tid"
+            @back="tid = undefined"
         />
     </main>
 </template>

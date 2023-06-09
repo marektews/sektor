@@ -1,16 +1,14 @@
 <script setup>
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import TerminalTile from '@/components/TerminalTile.vue'
 
-let data = reactive({ 
-    terminals: [],
-})
+const terminals = ref([])
 
 fetch('/api/terminal/all')
 .then((response) => response.json())
 .then((d) => {
     console.log('Fetch terminals:', d)
-    data.terminals = d
+    terminals.value = d
 })
 .catch((error) => console.error(error))
 
@@ -21,7 +19,7 @@ const emit = defineEmits(['terminal-selected'])
     <div>
         <header>Wybierz terminal</header>
         <div class="terminals-list">
-            <TerminalTile v-for="(item, index) in data.terminals" :key="index" 
+            <TerminalTile v-for="(item, index) in terminals" :key="index" 
                 :terminal="item"
                 @click="$event => emit('terminal-selected', $event)"
             />
