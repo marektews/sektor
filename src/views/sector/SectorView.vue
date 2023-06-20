@@ -1,13 +1,12 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
-import Close from '../../components/Close.vue';
-
-let data = reactive({ 
-    info: {},
-})
+import { url_sector_icon } from '@/assets/helper.js'
+import Close from '@/components/Close.vue';
 
 const route = useRoute()
+
+let info = reactive({})
 fetch(`/api/sector/${route.params.sid}`)
 .then(response => {
     if(response.status == 200)
@@ -17,7 +16,7 @@ fetch(`/api/sector/${route.params.sid}`)
 })
 .then(d => {
     console.log('Fetch sector state:', d)
-    data.info = d
+    info = d
 })
 .catch(error => console.error('Fetch sector state error:', error))
 
@@ -26,9 +25,9 @@ fetch(`/api/sector/${route.params.sid}`)
 <template>
     <header>
         <Close />
-        <img src="/D15.svg" width="50" />
+        <img :src="url_sector_icon()" width="50" />
         <div>
-            <h2>{{ data.info.name }}</h2>
+            <h2>{{ info.name.replace('a', '') }}</h2>
             <nav>
                 <RouterLink :to="{name: 'stan', params: route.params}">Aktualny stan</RouterLink> |
                 <RouterLink :to="{name: 'rozklad', params: route.params}">Rozkład jazdy</RouterLink>

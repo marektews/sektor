@@ -1,5 +1,6 @@
 <template>
-    <div class="close-btn" @click="$router.push({name: 'home'})" />
+    <div class="close-btn" @click="$router.push({name: 'home'})">
+    </div>
 </template>
 
 <style scoped>

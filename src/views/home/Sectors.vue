@@ -1,12 +1,11 @@
 <script setup>
 import { ref } from 'vue'
-import SectorTile from './SectorTile.vue'
-import Back from './Back.vue';
+import { url_sector_icon } from '@/assets/helper.js'
+import router from '@/router'
+import Back from '@/components/Back.vue'
+import ActiveTile from '@/components/ActiveTile.vue'
 
-const props = defineProps({
-    terminalId: String,
-})
-
+const props = defineProps(['terminalId'])
 const terminal = ref({})
 
 fetch(`/api/terminal/${props.terminalId}`)
@@ -22,6 +21,12 @@ function on_BackClicked() {
     console.log('back')
     emit('back')
 }
+function on_ItemClicked(sid) {
+    router.push({
+        name: "stan",
+        params: { sid: sid }
+    })
+}
 </script>
 
 <template>
@@ -31,9 +36,12 @@ function on_BackClicked() {
             <div>Wybierz sektor</div>
         </header>
         <div class="sectors-list">
-            <SectorTile v-for="(item, index) in terminal.sectors" :key="index" 
-                :sector="item"
-            />
+            <ActiveTile v-for="(item, index) in terminal.sectors" :key="index"
+                :image-path="url_sector_icon()"
+                @click="on_ItemClicked(item.sid)"
+            >
+                {{ item.name.replace('x','') }}
+            </ActiveTile>
         </div>
     </div>
 </template>

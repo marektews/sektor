@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import TerminalTile from '@/components/TerminalTile.vue'
+import { url_sector_icon } from '@/assets/helper.js'
+import ActiveTile from '@/components/ActiveTile.vue'
 
 const terminals = ref([])
-
 fetch('/api/terminal/all')
 .then((response) => response.json())
 .then((d) => {
@@ -19,10 +19,12 @@ const emit = defineEmits(['terminal-selected'])
     <div>
         <header>Wybierz terminal</header>
         <div class="terminals-list">
-            <TerminalTile v-for="(item, index) in terminals" :key="index" 
-                :terminal="item"
-                @click="$event => emit('terminal-selected', $event)"
-            />
+            <ActiveTile v-for="(item, index) in terminals" :key="index"
+                :image-path="url_sector_icon()"
+                @click="$emit('terminal-selected', item.tid)"
+            >
+                {{ item.name }}
+            </ActiveTile>
         </div>
     </div>
 </template>
