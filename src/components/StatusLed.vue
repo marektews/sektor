@@ -5,7 +5,7 @@ const props = defineProps(['status'])
 
 const status_color_class = computed(() => {
     switch(props.status) {
-        case 'no-bus': return "text-danger"
+        case 'no-bus': return "text-secondary"
         case 'in-buffer': return "text-primary"
         case 'second-circle': return "text-warning"
         case 'send-to-sector': return "text-success"
@@ -24,8 +24,9 @@ const status_color_class = computed(() => {
 
 <style scoped>
 .no-bus::before {
-    font: var(--fa-font-solid);
+    font: var(--fa-font-regular);
     content: "\f059";
+    /* content: "\e4e3"; */
 }
 
 .in-buffer:before {

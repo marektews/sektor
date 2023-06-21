@@ -23,7 +23,7 @@ function on_BackClicked() {
 }
 function on_ItemClicked(sid) {
     router.push({
-        name: "stan",
+        name: "sektor",
         params: { sid: sid }
     })
 }

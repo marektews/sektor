@@ -13,10 +13,10 @@ fetch('/api/buffer/all')
 })
 .catch((error) => console.error('Fetch buffers error:', error))
 
-function onBufferSelected(item) {
+function onBufferSelected(tid) {
     router.push({
         name: "bufor",
-        params: { tid: item.tid }
+        params: { tid: tid }
     })
 }
 </script>
@@ -27,7 +27,7 @@ function onBufferSelected(item) {
         <div class="buffers-list">
             <ActiveTile v-for="(item, index) in buffers" :key="index"
                 :image-path="url_buffer_icon()"
-                @click="onBufferSelected(item)"
+                @click="onBufferSelected(item.tid)"
             >
                 {{ item.name }}
             </ActiveTile>

@@ -1,10 +1,10 @@
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
-import { useRoute, } from 'vue-router';
-import { url_buffer_icon } from '@/assets/helper.js';
-// import { $mqtt } from 'vue-paho-mqtt';
-import Close from '../../components/Close.vue';
-import BusItem from './BusItem.vue';
+import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
+import { url_buffer_icon } from '@/assets/helper.js'
+import Close from '@/components/Close.vue'
+import BuforItem from './BuforItem.vue'
+import SectorsUsing from './SectorsUsing.vue'
 
 // DATA
 const data = reactive({
@@ -19,6 +19,30 @@ const data = reactive({
 const route = useRoute()
 const timer = ref(null)
 
+const sectors_states = computed(() => {
+    let tmp = {}
+    data.info.buses?.forEach((bus) => {
+        let sname = bus.sector.name.replace('x','')
+        let state = data.states[bus.id]
+        if(sname in tmp) {
+            if(state != undefined)
+                tmp[sname].push(state.status)
+        }
+        else
+            tmp[sname] = [state != undefined ? state.status : 'no-bus']
+    })
+    // console.log('sectors_using', tmp)
+    return tmp
+})
+
+const sectors_using = computed(() => {
+    let tmp = {}
+    for(const [sector, states] of Object.entries(sectors_states.value)) {
+        tmp[sector] = states.includes('send-to-sector') || states.includes('on-sector')
+    }
+    return tmp
+})
+
 onMounted(() => {
     // pobieranie statycznego info
     load_static_info()
@@ -27,30 +51,11 @@ onMounted(() => {
     timer.value = setInterval(() => {
         if(!data.loading.states)
             load_states()
-    }, 10000)
+    }, 20000)
     load_states()
-
-    // subskrypcja powiadomień
-    // $mqtt.subscribe('events', (payload) => {
-    //     payload = payload.replaceAll("'",'"')
-    //     console.log('MQTT:', payload, 'received');
-    //     let json = JSON.parse(payload)
-    //     if(json.rja_id in data.states) {
-    //         let u = data.states[json.rja_id]
-    //         u.status = json.status
-    //         u.ts = json.ts
-    //     }
-    //     else {
-    //         data.states[json.rja_id] = {
-    //             status: json.status,
-    //             ts: json.ts
-    //         }
-    //     }
-    // })
 })
 
 onBeforeUnmount(() => {
-    // $mqtt.unsubscribeAll()
     if(timer.value != null) {
         clearInterval(timer.value)
         timer.value = null
@@ -136,11 +141,16 @@ function apply_notification_response(json) {
             <Close />
         </header>
 
+        <div class="sectors-brief">
+            <SectorsUsing :using="sectors_using" />
+        </div>
+
         <div class="accordion" id="accordionRoot">
-            <BusItem v-for="(item, index) in data.info.buses" :key="index"
+            <BuforItem v-for="(item, index) in data.info.buses" :key="index"
                 :index="index"
                 :info="item"
                 :state="data.states[item.id]"
+                :sector-used="sectors_using[item.sector.name.replace('x','')]"
                 @notification="apply_notification_response"
             />
         </div>
@@ -158,6 +168,13 @@ header {
     flex-direction: row;
     gap: 12pt;
     align-items: center;
+}
+
+.sectors-brief {
+    margin: 4pt 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .loading-layout {

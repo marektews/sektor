@@ -7,9 +7,6 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            // route level code-splitting
-            // this generates a separate chunk (HomeView.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
             component: () => import('../views/home/HomeView.vue')
         },
         {
@@ -21,18 +18,6 @@ const router = createRouter({
             path: '/sektor/:sid',
             name: 'sektor',
             component: () => import('../views/sector/SectorView.vue'),
-            children: [
-                {
-                    path: "",
-                    name: "stan",
-                    component: () => import('../views/sector/SectorWorkflowFragment.vue')
-                },
-                {
-                    path: "rozklad",
-                    name: "rozklad",
-                    component: () => import('../views/sector/SectorScheduleFragment.vue')
-                }
-            ]
         }
     ]
 })

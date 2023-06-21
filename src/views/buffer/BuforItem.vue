@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import StatusLed from '@/components/StatusLed.vue'
 
-const props = defineProps(['index', 'info', 'state'])
+const props = defineProps(['index', 'info', 'state', 'sectorUsed'])
 const emit = defineEmits(['notification'])
 
 const congregation_name = computed(() => {
@@ -11,6 +11,8 @@ const congregation_name = computed(() => {
     else
         return `${props.info?.congregation.lang} - ${props.info?.congregation.name}`
 })
+
+const sector_name = computed(() => props.info?.sector.name.replace('x',''))
 
 const showBtnsGroup = computed(() => {
     let s = props.state?.status
@@ -98,9 +100,10 @@ function format_state(state) {
                 aria-expanded="false" 
                 :aria-controls="`collapse${index}`"
             >
-                <div class="bus-item-body">
+                <div class="buffer-item-body">
                     <strong>{{ info.arrive }}</strong>
                     <StatusLed :status="props.state ? props.state.status : 'no-bus'" />
+                    <strong>{{ sector_name }}</strong>
                     <div>{{ congregation_name }}</div>
                 </div>
             </button>
@@ -154,12 +157,7 @@ function format_state(state) {
 </template>
 
 <style scoped>
-.bus-item-layout {
-    padding-top: 1pt;
-    padding-bottom: 1pt;
-}
-
-.bus-item-body {
+.buffer-item-body {
     width: 100%;
     display: flex;
     flex-direction: row;
