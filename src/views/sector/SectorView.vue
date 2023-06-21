@@ -27,7 +27,7 @@ fetch(`/api/sector/${route.params.sid}`)
         <Close />
         <img :src="url_sector_icon()" width="50" />
         <div>
-            <h2>{{ info.name.replace('a', '') }}</h2>
+            <h2>{{ info.name?.replace('a', '') }}</h2>
             <nav>
                 <RouterLink :to="{name: 'stan', params: route.params}">Aktualny stan</RouterLink> |
                 <RouterLink :to="{name: 'rozklad', params: route.params}">Rozkład jazdy</RouterLink>

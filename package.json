@@ -1,6 +1,6 @@
 {
-  "name": "sektor",
-  "version": "0.2",
+  "name": "soa",
+  "version": "0.3",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "vue": "^3.3.4",
-    "vue-paho-mqtt": "^0.3.0",
     "vue-router": "^4.2.2"
   },
   "devDependencies": {
