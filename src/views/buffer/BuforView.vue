@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, } from 'vue-router';
 import { url_buffer_icon } from '@/assets/helper.js';
-import { $mqtt } from 'vue-paho-mqtt';
+// import { $mqtt } from 'vue-paho-mqtt';
 import Close from '../../components/Close.vue';
 import BusItem from './BusItem.vue';
 
@@ -10,15 +10,60 @@ import BusItem from './BusItem.vue';
 const data = reactive({
     info: {},
     states: {},
+    loading: {
+        info: false,
+        states: false
+    }
 })
 
 const route = useRoute()
+const timer = ref(null)
 
 onMounted(() => {
     // pobieranie statycznego info
+    load_static_info()
+
+    // pobieranie aktualnych stanów
+    timer.value = setInterval(() => {
+        if(!data.loading.states)
+            load_states()
+    }, 10000)
+    load_states()
+
+    // subskrypcja powiadomień
+    // $mqtt.subscribe('events', (payload) => {
+    //     payload = payload.replaceAll("'",'"')
+    //     console.log('MQTT:', payload, 'received');
+    //     let json = JSON.parse(payload)
+    //     if(json.rja_id in data.states) {
+    //         let u = data.states[json.rja_id]
+    //         u.status = json.status
+    //         u.ts = json.ts
+    //     }
+    //     else {
+    //         data.states[json.rja_id] = {
+    //             status: json.status,
+    //             ts: json.ts
+    //         }
+    //     }
+    // })
+})
+
+onBeforeUnmount(() => {
+    // $mqtt.unsubscribeAll()
+    if(timer.value != null) {
+        clearInterval(timer.value)
+        timer.value = null
+    }
+})
+
+/**
+ * Pobieranie statycznych informacji
+ */
+function load_static_info() {
     fetch(`/api/buffer/${route.params.tid}`)
     .then(response => {
-        console.log('Fetch buffer info response:', response)
+        // console.log('Fetch buffer info response:', response)
         if(response.status == 200)
             return response.json()
         else
@@ -29,11 +74,18 @@ onMounted(() => {
         data.info = d
     })
     .catch(error => console.error('Fetch buffer info error:', error))
+}
 
-    // pobieranie aktualnych stanów
+/**
+ * Pobieranie aktualnych stanów
+ */
+function load_states() {
+    data.loading.states = true
+
     fetch(`/api/buffer/${route.params.tid}/states`)
     .then(response => {
-        console.log('Fetch buffer states response:', response)
+        data.loading.states = false
+        // console.log('Fetch buffer states response:', response)
         if(response.status == 200)
             return response.json()
         else
@@ -44,30 +96,25 @@ onMounted(() => {
         if(d.bid == route.params.tid)
             data.states = d.states
     })
-    .catch(error => console.error('Fetch buffer states error:', error))
-
-    // subskrypcja powiadomień
-    $mqtt.subscribe('events', (payload) => {
-        payload = payload.replaceAll("'",'"')
-        console.log('MQTT:', payload, 'received');
-        let json = JSON.parse(payload)
-        if(json.rja_id in data.states) {
-            let u = data.states[json.rja_id]
-            u.status = json.status
-            u.ts = json.ts
-        }
-        else {
-            data.states[json.rja_id] = {
-                status: json.status,
-                ts: json.ts
-            }
-        }
+    .catch(error => {
+        console.error('Fetch buffer states error:', error)
+        data.loading.states = false
     })
-})
+}
 
-onBeforeUnmount(() => {
-    $mqtt.unsubscribeAll()
-})
+function apply_notification_response(json) {
+    if(json.rja_id in data.states) {
+        let u = data.states[json.rja_id]
+        u.status = json.status
+        u.ts = json.ts
+    }
+    else {
+        data.states[json.rja_id] = {
+            status: json.status,
+            ts: json.ts
+        }
+    }    
+}
 </script>
 
 <template>
@@ -94,6 +141,7 @@ onBeforeUnmount(() => {
                 :index="index"
                 :info="item"
                 :state="data.states[item.id]"
+                @notification="apply_notification_response"
             />
         </div>
     </template>

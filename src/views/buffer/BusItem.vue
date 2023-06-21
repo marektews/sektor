@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import StatusLed from '@/components/StatusLed.vue'
 
 const props = defineProps(['index', 'info', 'state'])
+const emit = defineEmits(['notification'])
 
 const congregation_name = computed(() => {
     if(props.info?.sra.lp != null)
@@ -13,7 +14,7 @@ const congregation_name = computed(() => {
 
 const showBtnsGroup = computed(() => {
     let s = props.state?.status
-    return s === 'no-bus' || s === 'in-buffer' || s === 'second-circle' || s === 'send-to-sector' 
+    return s === undefined || s === 'no-bus' || s === 'in-buffer' || s === 'second-circle' || s === 'send-to-sector' 
 })
 
 /**
@@ -22,6 +23,11 @@ const showBtnsGroup = computed(() => {
  */
 function onNoBus(info) {
     fetch(`/api/buffer/notify/nobus/${info.id}`)
+    .then(response => response.json())
+    .then(d => {
+        // console.log('BUFFER: NOBUS notification:', d)
+        emit('notification', d)
+    })
     .catch(err => console.error("BUFFER: NOBUS notification error:", err))
 }
 
@@ -31,6 +37,11 @@ function onNoBus(info) {
  */
 function onArriveToBuffer(info) {
     fetch(`/api/buffer/notify/inbuffer/${info.id}`)
+    .then(response => response.json())
+    .then(d => {
+        // console.log('BUFFER: IN-BUFFER notification:', d)
+        emit('notification', d)
+    })
     .catch(err => console.error("BUFFER: IN-BUFFER notification error:", err))
 }
 
@@ -40,6 +51,11 @@ function onArriveToBuffer(info) {
  */
 function onSecondCircle(info) {
     fetch(`/api/buffer/notify/secondcircle/${info.id}`)
+    .then(response => response.json())
+    .then(d => {
+        // console.log('BUFFER: SECOND-CIRCLE notification:', d)
+        emit('notification', d)
+    })
     .catch(err => console.error("BUFFER: SECOND-CIRCLE notification error:", err))
 }
 
@@ -49,6 +65,11 @@ function onSecondCircle(info) {
  */
 function onSendToSector(info) {
     fetch(`/api/buffer/notify/sendtosector/${info.id}`)
+    .then(response => response.json())
+    .then(d => {
+        // console.log('BUFFER: SEND-TO-SECTOR notification:', d)
+        emit('notification', d)
+    })
     .catch(err => console.error("BUFFER: SEND-TO-SECTOR notification error:", err))
 }
 
