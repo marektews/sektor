@@ -17,15 +17,18 @@ const status_color_class = computed(() => {
 </script>
 
 <template>
-    <div :class="status_color_class">
+    <div :class="status_color_class" class="sl-cnt">
         <i :class="props.status" />
     </div>
 </template>
 
 <style scoped>
+.sl-cnt {
+    min-width: 10pt;
+}
 .no-bus::before {
     font: var(--fa-font-regular);
-    content: "\f059";
+    /* content: "\f059"; */
     /* content: "\e4e3"; */
 }
 

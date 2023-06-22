@@ -31,7 +31,6 @@ const sectors_states = computed(() => {
         else
             tmp[sname] = [state != undefined ? state.status : 'no-bus']
     })
-    // console.log('sectors_using', tmp)
     return tmp
 })
 

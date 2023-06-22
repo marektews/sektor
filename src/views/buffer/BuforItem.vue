@@ -144,7 +144,7 @@ function format_state(state) {
                     </button>
                     <button 
                         class="btn btn-success"
-                        :disabled="props.state?.status === 'send-to-sector'"
+                        :disabled="props.state?.status === 'send-to-sector' || props.sectorUsed"
                         @click="onSendToSector(info)"
                     >
                         <i class="fa-solid fa-paper-plane" />

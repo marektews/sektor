@@ -1,24 +1,26 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
 const props = defineProps(['using'])
 const used_color = (used) => used ? 'text-danger' : 'text-success'
 // const used_to_str = (used) => used ? 'zajęty' : 'wolny'
 
-const using_list = computed(() => {
-    let tmp = []
-    for(const [sector, using] of Object.entries(props.using)) {
-        tmp.push({ name: sector, used: using })
-    }
-    return tmp
-})
+const circle = ref(null)
+watch(() => props.using, (nv) => {
+    circle.value.forEach((elem) => {
+        let tmp = nv[elem.id]
+        elem.classList.replace(used_color(!tmp), used_color(tmp))
+    })
+}, { deep: true })
 </script>
 
 <template>
     <div class="sectors-using-layout">
-        <div v-for="(item, index) in using_list" :key="index">
-            <span class="me-2">{{ item.name }}:</span>
-            <span class="fa-solid fa-circle" :class="used_color(item.used)" />
-            <!-- <span class="ms-1" :class="used_color(item.used)">{{ used_to_str(item.used) }}</span> -->
+        <div v-for="(item, index) in Object.keys(props.using)" :key="index">
+            <span class="me-2">{{ item }}:</span>
+            <span ref="circle" :id="item" :class="used_color(props.using[item])" >
+                <i class="fa-solid fa-circle" />
+                <!-- <span class="ms-1">{{ used_to_str(item.used) }}</span> -->
+            </span>
         </div>
     </div>
 </template>
