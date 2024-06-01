@@ -11,7 +11,7 @@ export default defineConfig(({_, mode}) => {
                 '@': fileURLToPath(new URL('./src', import.meta.url))
             },
         },
-        base: mode === 'production' ? '/sektor/' : '',
+        base: '',
         server: {
             proxy: {
                 '/api': {
