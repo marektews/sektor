@@ -10,6 +10,7 @@ const status_color_class = computed(() => {
         case 'second-circle': return "text-warning"
         case 'send-to-sector': return "text-success"
         case 'on-sector': return "text-danger"
+        case 'ready-to-leave': return "text-warning"
         case 'on-the-road': return "text-success"
     }
     return "text-secondary"
@@ -50,6 +51,11 @@ const status_color_class = computed(() => {
 .on-sector:before {
     font: var(--fa-font-solid);
     content: "\f540";
+}
+
+.ready-to-leave:before {
+    font: var(--fa-font-solid);
+    content: "\f0f3";
 }
 
 .on-the-road:before {

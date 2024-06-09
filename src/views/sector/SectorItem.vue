@@ -27,9 +27,19 @@ const showBtnOnSector = computed(() => {
     return s === 'send-to-sector'
 })
 
-const showBtnOnTheRoad = computed(() => {
+const showBtnReadyToLeave = computed(() => {
     let s = props.state?.status
     return s === 'on-sector'
+})
+
+const showBtnError2 = computed(() => {
+    let s = props.state?.status
+    return s === 'ready-to-leave'
+})
+
+const showBtnOnTheRoad = computed(() => {
+    let s = props.state?.status
+    return s === 'on-sector' || s === 'ready-to-leave'
 })
 
 function format_state(state) {
@@ -39,6 +49,7 @@ function format_state(state) {
             case 'second-circle': return "dodatkowy krąg"
             case 'send-to-sector': return "wysłany na sektor"
             case 'on-sector': return "na sektorze"
+            case 'ready-to-leave': return "gotowy do odjazdu"
             case 'on-the-road': return "w trasie"
         }
     }
@@ -57,6 +68,16 @@ function format_state(state) {
         emit('notification', d)
     })
     .catch(err => console.error("SECTOR: SEND-TO-SECTOR notification error:", err))
+}
+
+function onReadyToLeave(info) {
+    fetch(`/api/sector/notify/readytoleave/${info.id}`)
+    .then(response => response.json())
+    .then(d => {
+        // console.log('SECTOR: READY-TO-LEAVE notification:', d)
+        emit('notification', d)
+    })
+    .catch(err => console.error("SECTOR: READY-TO-LEAVE notification error:", err))
 }
 
 /**
@@ -123,12 +144,29 @@ function format_state(state) {
                         <i class="fa-solid fa-paper-plane" />
                         <div>Pomyłka - wciąż czekam</div>
                     </button>
+
+                    <button v-if="showBtnError2"
+                        class="btn btn-danger"
+                        @click="onOnSector(info)"
+                    >
+                        <i class="fa-solid fa-square-parking" />
+                        <div>Pomyłka - wciąż na sektorze</div>
+                    </button>
+
                     <button v-if="showBtnOnSector"
                         class="btn btn-danger"
                         @click="onOnSector(info)"
                     >
                         <i class="fa-solid fa-square-parking" />
                         <div>Przyjazd na sektor</div>
+                    </button>
+
+                    <button v-if="showBtnReadyToLeave"
+                        class="btn btn-warning"
+                        @click="onReadyToLeave(info)"
+                    >
+                        <i class="fa-solid fa-bell" />
+                        <div>Gotowy do odjazdu</div>
                     </button>
                     <button v-if="showBtnOnTheRoad"
                         class="btn btn-success"

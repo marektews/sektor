@@ -82,6 +82,7 @@ function format_state(state) {
             case 'second-circle': return "dodatkowy krąg"
             case 'send-to-sector': return "wysłany na sektor"
             case 'on-sector': return "na sektorze"
+            case 'ready-to-leave': return "gotowy do odjazdu"
             case 'on-the-road': return "w trasie"
         }
     }

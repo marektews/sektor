@@ -15,7 +15,7 @@ export default defineConfig(({_, mode}) => {
         server: {
             proxy: {
                 '/api': {
-                    target: "http://krw.ddns.net/",
+                    target: "http://krw.ddns.net:8080/",
                     changeOrigin: true,
                     secure: false,
                 }
