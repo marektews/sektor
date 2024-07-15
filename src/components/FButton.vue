@@ -6,7 +6,6 @@
 
 <style scoped>
 button {
-    
     padding: 12pt;
     min-height: 1cm;
 }

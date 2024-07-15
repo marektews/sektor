@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faPaperPlane, faSquareParking, faBell, faRoute } from '@fortawesome/free-solid-svg-icons';
 import StatusLed from '@/components/StatusLed.vue'
 
 const props = defineProps(['index', 'info', 'state'])
@@ -141,7 +143,7 @@ function onReadyToLeave(info) {
                         class="btn btn-primary"
                         @click="onSendToSector(info)"
                     >
-                        <i class="fa-solid fa-paper-plane" />
+                        <FontAwesomeIcon :icon="faPaperPlane" />
                         <div>Pomyłka - wciąż czekam</div>
                     </button>
 
@@ -149,7 +151,7 @@ function onReadyToLeave(info) {
                         class="btn btn-danger"
                         @click="onOnSector(info)"
                     >
-                        <i class="fa-solid fa-square-parking" />
+                        <FontAwesomeIcon :icon="faSquareParking" />
                         <div>Pomyłka - wciąż na sektorze</div>
                     </button>
 
@@ -157,7 +159,7 @@ function onReadyToLeave(info) {
                         class="btn btn-danger"
                         @click="onOnSector(info)"
                     >
-                        <i class="fa-solid fa-square-parking" />
+                        <FontAwesomeIcon :icon="faSquareParking" />
                         <div>Przyjazd na sektor</div>
                     </button>
 
@@ -165,14 +167,14 @@ function onReadyToLeave(info) {
                         class="btn btn-warning"
                         @click="onReadyToLeave(info)"
                     >
-                        <i class="fa-solid fa-bell" />
+                        <FontAwesomeIcon :icon="faBell" />
                         <div>Gotowy do odjazdu</div>
                     </button>
                     <button v-if="showBtnOnTheRoad"
                         class="btn btn-success"
                         @click="onOnTheRoad(info)"
                     >
-                        <i class="fa-solid fa-route" />
+                        <FontAwesomeIcon :icon="faRoute" />
                         <div>Odjazd autokaru</div>
                     </button>
                 </div>

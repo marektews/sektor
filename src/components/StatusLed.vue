@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faRoute, faBus, faPaperPlane, faSquareParking, faCircleQuestion, faArrowRightRotate, faBell } from '@fortawesome/free-solid-svg-icons';
+
 
 const props = defineProps(['status'])
 
@@ -15,11 +18,25 @@ const status_color_class = computed(() => {
     }
     return "text-secondary"
 })
+
+const status_icon = computed(() => {
+    switch(props.status) {
+        case 'no-bus': return faCircleQuestion
+        case 'in-buffer': return faBus
+        case 'second-circle': return faArrowRightRotate
+        case 'send-to-sector': return faPaperPlane
+        case 'on-sector': return faSquareParking
+        case 'ready-to-leave': return faBell
+        case 'on-the-road': return faRoute
+    }
+    return faCircleQuestion
+})
+
 </script>
 
 <template>
     <div :class="status_color_class" class="sl-cnt">
-        <i :class="props.status" />
+        <FontAwesomeIcon :icon="status_icon" />
     </div>
 </template>
 

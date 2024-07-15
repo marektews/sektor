@@ -3,21 +3,18 @@ defineProps(['imagePath', 'label'])
 </script>
 
 <template>
-    <div class="tile">
-        <img :src="imagePath" />
-        <div class="label">
-            <slot />
+    <div class="card">
+        <div class="card-body tile">
+            <img :src="imagePath" />
+            <div class="label">
+                <slot />
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
 .tile {
-    background-color: var(--vt-c-black-soft);
-    border-width: 0;
-    border-radius: 3pt;
-    padding: 18pt;
-
     min-height: 60pt;
 
     display: flex;

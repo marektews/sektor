@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCircleQuestion, faBus, faArrowRotateRight, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import StatusLed from '@/components/StatusLed.vue'
 
 const props = defineProps(['index', 'info', 'state', 'sectorUsed'])
@@ -124,7 +126,7 @@ function format_state(state) {
                         :disabled="props.state?.status === 'no-bus'"
                         @click="onNoBus(info)"
                     >
-                        <i class="fa-solid fa-circle-question" />
+                        <FontAwesomeIcon :icon="faCircleQuestion" />
                         <div>Brak</div>
                     </button>
                     <button
@@ -132,7 +134,7 @@ function format_state(state) {
                         :disabled="props.state?.status === 'in-buffer'"
                         @click="onArriveToBuffer(info)"
                     >
-                        <i class="fa-solid fa-bus" />
+                        <FontAwesomeIcon :icon="faBus" />
                         <div>W buforze</div>
                     </button>
                     <button 
@@ -140,7 +142,7 @@ function format_state(state) {
                         :disabled="props.state?.status === 'second-circle'"
                         @click="onSecondCircle(info)"
                     >
-                        <i class="fa-solid fa-arrow-rotate-right" />
+                        <FontAwesomeIcon :icon="faArrowRotateRight" />
                         <div>Drugi krąg</div>
                     </button>
                     <button 
@@ -148,7 +150,7 @@ function format_state(state) {
                         :disabled="props.state?.status === 'send-to-sector' || props.sectorUsed"
                         @click="onSendToSector(info)"
                     >
-                        <i class="fa-solid fa-paper-plane" />
+                        <FontAwesomeIcon :icon="faPaperPlane" />
                         <div>Na sektor</div>
                     </button>
                 </div>

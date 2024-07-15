@@ -2,9 +2,10 @@
 import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { url_buffer_icon } from '@/assets/helper.js'
-import Close from '@/components/Close.vue'
+import Close from '@/components/CloseButton.vue'
 import BuforItem from './BuforItem.vue'
 import SectorsUsing from './SectorsUsing.vue'
+import LegendCtrl from '@/components/LegendCtrl.vue'
 
 // DATA
 const data = reactive({
@@ -37,7 +38,7 @@ const sectors_states = computed(() => {
 const sectors_using = computed(() => {
     let tmp = {}
     for(const [sector, states] of Object.entries(sectors_states.value)) {
-        tmp[sector] = states.includes('send-to-sector') || states.includes('on-sector')
+        tmp[sector] = states.includes('send-to-sector') || states.includes('ready-to-leave') || states.includes('on-sector')
     }
     return tmp
 })
@@ -153,6 +154,8 @@ function apply_notification_response(json) {
                 @notification="apply_notification_response"
             />
         </div>
+
+        <LegendCtrl class="mt-4" />
     </template>
 </template>
 

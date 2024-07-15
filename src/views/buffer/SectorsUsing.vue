@@ -1,5 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
 const props = defineProps(['using'])
 const used_color = (used) => used ? 'text-danger' : 'text-success'
 // const used_to_str = (used) => used ? 'zajęty' : 'wolny'
@@ -18,7 +20,7 @@ watch(() => props.using, (nv) => {
         <div v-for="(item, index) in Object.keys(props.using)" :key="index">
             <span class="me-2">{{ item }}:</span>
             <span ref="circle" :id="item" :class="used_color(props.using[item])" >
-                <i class="fa-solid fa-circle" />
+                <FontAwesomeIcon :icon="faCircle" />
                 <!-- <span class="ms-1">{{ used_to_str(item.used) }}</span> -->
             </span>
         </div>

@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import StartMenu from './StartMenu.vue'
-import Buffers from './Buffers.vue'
-import Terminals from './Terminals.vue'
-import Sectors from './Sectors.vue'
+import BuffersGroup from './BuffersGroup.vue'
+import TerminalsGroup from './TerminalsGroup.vue'
+import SectorsGroup from './SectorsGroup.vue'
 
 const mode = ref(0)
 const tid = ref(undefined)
@@ -17,13 +17,13 @@ const tid = ref(undefined)
             @terminals="mode = 20"
         />
 
-        <Buffers v-else-if="mode === 10" />
+        <BuffersGroup v-else-if="mode === 10" />
         
-        <Terminals v-else-if="mode === 20"
+        <TerminalsGroup v-else-if="mode === 20"
             @terminal-selected="$event => {tid = $event; mode = 21}" 
         />
         
-        <Sectors v-else-if="mode === 21"
+        <SectorsGroup v-else-if="mode === 21"
             :terminal-id="tid"
             @back="mode = 20"
         />

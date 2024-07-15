@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { url_sector_icon } from '@/assets/helper.js'
 import router from '@/router'
-import Back from '@/components/Back.vue'
+import Back from '@/components/BackButton.vue'
 import ActiveTile from '@/components/ActiveTile.vue'
 
 const props = defineProps(['terminalId'])

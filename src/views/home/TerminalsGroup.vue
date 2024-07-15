@@ -21,7 +21,7 @@ const emit = defineEmits(['terminal-selected'])
         <div class="terminals-list">
             <ActiveTile v-for="(item, index) in terminals" :key="index"
                 :image-path="url_sector_icon()"
-                @click="$emit('terminal-selected', item.tid)"
+                @click="emit('terminal-selected', item.tid)"
             >
                 {{ item.name }}
             </ActiveTile>

@@ -1,9 +1,12 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { url_sector_icon } from '@/assets/helper.js'
-import Close from '@/components/Close.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
+import CloseButton from '@/components/CloseButton.vue'
 import SectorItem from './SectorItem.vue'
+import LegendCtrl from '@/components/LegendCtrl.vue'
 
 // DATA
 const data = reactive({
@@ -115,10 +118,10 @@ function apply_notification_response(json) {
         <header>
             <img :src="url_sector_icon()" width="50" />
             <div>{{ sector_name }}</div>
-            <Close />
+            <CloseButton />
         </header>
 
-        <div class="accordion" id="accordionRoot">
+        <div v-if="data.info.buses.length > 0" class="accordion" id="accordionRoot">
             <SectorItem v-for="(item, index) in data.info.buses" :key="index"
                 :index="index"
                 :info="item"
@@ -126,6 +129,12 @@ function apply_notification_response(json) {
                 @notification="apply_notification_response"
             />
         </div>
+        <div v-else class="alert alert-danger">
+            <FontAwesomeIcon :icon="faCircleExclamation" />
+            Brak rozkładu jazdy dla tego sektora.
+        </div>
+
+        <LegendCtrl class="mt-4" />
     </template>
 </template>
 
@@ -149,5 +158,4 @@ header {
     align-items: center;
     text-align: center;
 }
-
 </style>
