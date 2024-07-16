@@ -44,6 +44,10 @@ const showBtnOnTheRoad = computed(() => {
     return s === 'on-sector' || s === 'ready-to-leave'
 })
 
+const status = computed(() => {
+    return props.state ? props.state.status : 'no-bus'
+})
+
 function format_state(state) {
     if(state != undefined) {
         switch(state.status) {
@@ -122,10 +126,17 @@ function onReadyToLeave(info) {
                 aria-expanded="false" 
                 :aria-controls="`collapse${index}`"
             >
-                <div class="sector-item-body">
-                    <strong>{{ info.departure }}</strong>
-                    <StatusLed :status="props.state ? props.state.status : 'no-bus'" />
-                    <div>{{ congregation_name }}</div>
+                <div class="sector-item-body" :class="{'text-muted' : status==='on-the-road'}">
+                    <template v-if="status==='on-the-road'">
+                        <span>{{ info.departure }}</span>
+                        <StatusLed :status="status" />
+                        <span>{{ congregation_name }}</span>
+                    </template>
+                    <template v-else>
+                        <strong>{{ info.departure }}</strong>
+                        <StatusLed :status="status" />
+                        <strong>{{ congregation_name }}</strong>
+                    </template>
                 </div>
             </button>
         </div>

@@ -14,11 +14,15 @@ const congregation_name = computed(() => {
         return `${props.info?.congregation.lang} - ${props.info?.congregation.name}`
 })
 
-const sector_name = computed(() => props.info?.sector.name.replace('x',''))
+const sector_name = computed(() => props.info?.sector.name)
 
 const showBtnsGroup = computed(() => {
     let s = props.state?.status
     return s === undefined || s === 'no-bus' || s === 'in-buffer' || s === 'second-circle' || s === 'send-to-sector' 
+})
+
+const status = computed(() => {
+    return props.state ? props.state.status : 'no-bus'
 })
 
 /**
@@ -103,11 +107,19 @@ function format_state(state) {
                 aria-expanded="false" 
                 :aria-controls="`collapse${index}`"
             >
-                <div class="buffer-item-body">
-                    <strong>{{ info.arrive }}</strong>
-                    <StatusLed :status="props.state ? props.state.status : 'no-bus'" />
-                    <strong>{{ sector_name }}</strong>
-                    <div>{{ congregation_name }}</div>
+                <div class="buffer-item-body" :class="{'text-muted' : status==='on-the-road'}">
+                    <template v-if="status==='on-the-road'">
+                        <span>{{ info.arrive }}</span>
+                        <StatusLed :status="status" />
+                        <span>{{ sector_name }}</span>
+                        <span>{{ congregation_name }}</span>
+                    </template>
+                    <template v-else>
+                        <strong>{{ info.arrive }}</strong>
+                        <StatusLed :status="props.state ? props.state.status : 'no-bus'" />
+                        <strong>{{ sector_name }}</strong>
+                        <strong>{{ congregation_name }}</strong>
+                    </template>
                 </div>
             </button>
         </div>
