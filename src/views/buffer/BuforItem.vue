@@ -9,9 +9,9 @@ const emit = defineEmits(['notification'])
 
 const congregation_name = computed(() => {
     if(props.info?.sra.lp != null)
-        return `${props.info?.congregation.lang} - ${props.info?.congregation.name} ${props.info?.sra.lp}`
+        return `${props.info?.congregation.ident} - ${props.info?.congregation.name} ${props.info?.sra.lp}`
     else
-        return `${props.info?.congregation.lang} - ${props.info?.congregation.name}`
+        return `${props.info?.congregation.ident} - ${props.info?.congregation.name}`
 })
 
 const sector_name = computed(() => props.info?.sector.name)

@@ -1,3 +1,83 @@
+<template>
+    <div class="accordion-item">
+        <div class="accordion-header">
+            <button 
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse" 
+                :data-bs-target="`#collapse${index}`"
+                aria-expanded="false" 
+                :aria-controls="`collapse${index}`"
+            >
+                <div class="sector-item-body" :class="{'text-muted' : status==='on-the-road'}">
+                    <template v-if="status==='on-the-road'">
+                        <span>{{ info.departure }}</span>
+                        <StatusLed :status="status" />
+                        <span>{{ congregation_name }}</span>
+                    </template>
+                    <template v-else>
+                        <strong>{{ info.departure }}</strong>
+                        <StatusLed :status="status" />
+                        <strong>{{ congregation_name }}</strong>
+                    </template>
+                </div>
+            </button>
+        </div>
+        <div class="accordion-collapse collapse" :id="`collapse${index}`" data-bs-parent="#accordionRoot">
+            <div class="collapse-layout">
+                <div class="states-layout">
+                    <div>Planowe podstawienie na sektor: <strong>{{ info?.arrive }}</strong></div>
+                    <div>
+                        Status: <strong>{{ format_state(props.state) }}</strong>
+                        <small class="ms-2">{{ props.state?.ts }}</small>
+                    </div>
+                </div>
+                <div v-if="showBtnsGroup" class="btn-group">
+                    <button v-if="showBtnError"
+                        class="btn btn-primary"
+                        @click="onSendToSector(info)"
+                    >
+                        <FontAwesomeIcon :icon="faPaperPlane" />
+                        <div>Pomyłka - wciąż czekam</div>
+                    </button>
+
+                    <button v-if="showBtnError2"
+                        class="btn btn-danger"
+                        @click="onOnSector(info)"
+                    >
+                        <FontAwesomeIcon :icon="faSquareParking" />
+                        <div>Pomyłka - wciąż na sektorze</div>
+                    </button>
+
+                    <button v-if="showBtnOnSector"
+                        class="btn btn-danger"
+                        @click="onOnSector(info)"
+                    >
+                        <FontAwesomeIcon :icon="faSquareParking" />
+                        <div>Przyjazd na sektor</div>
+                    </button>
+
+                    <button v-if="showBtnReadyToLeave"
+                        class="btn btn-warning"
+                        @click="onReadyToLeave(info)"
+                    >
+                        <FontAwesomeIcon :icon="faBell" />
+                        <div>Gotowy do odjazdu</div>
+                    </button>
+                    <button v-if="showBtnOnTheRoad"
+                        class="btn btn-success"
+                        @click="onOnTheRoad(info)"
+                    >
+                        <FontAwesomeIcon :icon="faRoute" />
+                        <div>Odjazd autokaru</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
 <script setup>
 import { computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -9,9 +89,9 @@ const emit = defineEmits(['notification'])
 
 const congregation_name = computed(() => {
     if(props.info?.sra.lp != null)
-        return `${props.info?.congregation.lang} - ${props.info?.congregation.name} ${props.info?.sra.lp}`
+        return `${props.info?.congregation.ident} - ${props.info?.congregation.name} ${props.info?.sra.lp}`
     else
-        return `${props.info?.congregation.lang} - ${props.info?.congregation.name}`
+        return `${props.info?.congregation.ident} - ${props.info?.congregation.name}`
 })
 
 const showBtnsGroup = computed(() => {
@@ -115,84 +195,6 @@ function onReadyToLeave(info) {
 }
 </script>
 
-<template>
-    <div class="accordion-item">
-        <div class="accordion-header">
-            <button 
-                class="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse" 
-                :data-bs-target="`#collapse${index}`"
-                aria-expanded="false" 
-                :aria-controls="`collapse${index}`"
-            >
-                <div class="sector-item-body" :class="{'text-muted' : status==='on-the-road'}">
-                    <template v-if="status==='on-the-road'">
-                        <span>{{ info.departure }}</span>
-                        <StatusLed :status="status" />
-                        <span>{{ congregation_name }}</span>
-                    </template>
-                    <template v-else>
-                        <strong>{{ info.departure }}</strong>
-                        <StatusLed :status="status" />
-                        <strong>{{ congregation_name }}</strong>
-                    </template>
-                </div>
-            </button>
-        </div>
-        <div class="accordion-collapse collapse" :id="`collapse${index}`" data-bs-parent="#accordionRoot">
-            <div class="collapse-layout">
-                <div class="states-layout">
-                    <div>Planowe podstawienie na sektor: <strong>{{ info?.arrive }}</strong></div>
-                    <div>
-                        Status: <strong>{{ format_state(props.state) }}</strong>
-                        <small class="ms-2">{{ props.state?.ts }}</small>
-                    </div>
-                </div>
-                <div v-if="showBtnsGroup" class="btn-group">
-                    <button v-if="showBtnError"
-                        class="btn btn-primary"
-                        @click="onSendToSector(info)"
-                    >
-                        <FontAwesomeIcon :icon="faPaperPlane" />
-                        <div>Pomyłka - wciąż czekam</div>
-                    </button>
-
-                    <button v-if="showBtnError2"
-                        class="btn btn-danger"
-                        @click="onOnSector(info)"
-                    >
-                        <FontAwesomeIcon :icon="faSquareParking" />
-                        <div>Pomyłka - wciąż na sektorze</div>
-                    </button>
-
-                    <button v-if="showBtnOnSector"
-                        class="btn btn-danger"
-                        @click="onOnSector(info)"
-                    >
-                        <FontAwesomeIcon :icon="faSquareParking" />
-                        <div>Przyjazd na sektor</div>
-                    </button>
-
-                    <button v-if="showBtnReadyToLeave"
-                        class="btn btn-warning"
-                        @click="onReadyToLeave(info)"
-                    >
-                        <FontAwesomeIcon :icon="faBell" />
-                        <div>Gotowy do odjazdu</div>
-                    </button>
-                    <button v-if="showBtnOnTheRoad"
-                        class="btn btn-success"
-                        @click="onOnTheRoad(info)"
-                    >
-                        <FontAwesomeIcon :icon="faRoute" />
-                        <div>Odjazd autokaru</div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
 
 <style scoped>
 .sector-item-body {
