@@ -98,8 +98,7 @@ function load_states() {
     })
     .then(d => {
         console.log('Fetch buffer states:', d)
-        if(d.bid == route.params.tid)
-            data.states = d.states
+        data.states = d.states
     })
     .catch(error => {
         console.error('Fetch buffer states error:', error)

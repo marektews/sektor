@@ -4,7 +4,7 @@ import { url_sector_icon } from '@/assets/helper.js'
 import ActiveTile from '@/components/ActiveTile.vue'
 
 const terminals = ref([])
-fetch('/api/terminal/all')
+fetch('/api/terminals/all')
 .then((response) => response.json())
 .then((d) => {
     console.log('Fetch terminals:', d)

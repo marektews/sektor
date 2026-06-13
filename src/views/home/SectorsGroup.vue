@@ -8,7 +8,7 @@ import ActiveTile from '@/components/ActiveTile.vue'
 const props = defineProps(['terminalId'])
 const terminal = ref({})
 
-fetch(`/api/terminal/${props.terminalId}`)
+fetch(`/api/terminals/fullinfo/${props.terminalId}`)
 .then((response) => response.json())
 .then((d) => {
     console.log('Fetch full info of selected terminal:', d)
