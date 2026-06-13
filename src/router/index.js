@@ -1,7 +1,7 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-    history: createWebHashHistory(process.env.publicPath),
+    history: createWebHistory(import.meta.env.BASE_URL),
     linkExactActiveClass: 'exact-active-link',
     routes: [
         {
@@ -10,7 +10,7 @@ const router = createRouter({
             component: () => import('../views/home/HomeView.vue')
         },
         {
-            path: '/bufor/:tid',
+            path: '/bufor/:name',
             name: 'bufor',
             component: () => import('../views/buffer/BuforView.vue'),
         },

@@ -1,22 +1,29 @@
 <script setup>
-import { ref } from 'vue'
-import router from '@/router'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
 import { url_buffer_icon } from '@/assets/helper.js'
 import ActiveTile from '@/components/ActiveTile.vue'
 
+const router = useRouter()
 const buffers = ref([])
-fetch('/api/buffer/all')
-.then((response) => response.json())
-.then((d) => {
-    console.log('Fetch buffers:', d)
-    buffers.value = d
-})
-.catch((error) => console.error('Fetch buffers error:', error))
 
-function onBufferSelected(tid) {
-    router.push({
-        name: "bufor",
-        params: { tid: tid }
+onMounted(() => {
+    fetch('/api/buffer/all')
+    .then((response) => response.json())
+    .then((d) => {
+        console.log('Fetch buffers:', d)
+        buffers.value = d
+    })
+    .catch((error) => console.error('Fetch buffers error:', error))
+})
+
+function onBufferSelected(terminalID, terminalName) {
+    // router.push(`/bufor/${terminalName}`)
+    router.push({ 
+        name: 'bufor', 
+        params: { 
+            name: terminalName,
+        } 
     })
 }
 </script>
@@ -27,7 +34,7 @@ function onBufferSelected(tid) {
         <div class="buffers-list">
             <ActiveTile v-for="(item, index) in buffers" :key="index"
                 :image-path="url_buffer_icon()"
-                @click="onBufferSelected(item.tid)"
+                @click="onBufferSelected(item.id, item.name)"
             >
                 {{ item.name }}
             </ActiveTile>

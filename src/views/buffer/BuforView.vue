@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
  * Pobieranie statycznych informacji
  */
 function load_static_info() {
-    fetch(`/api/buffer/${route.params.tid}`)
+    fetch(`/api/buffer/fullinfo/${route.params.name}`)
     .then(response => {
         // console.log('Fetch buffer info response:', response)
         if(response.status == 200)
@@ -87,7 +87,7 @@ function load_static_info() {
 function load_states() {
     data.loading.states = true
 
-    fetch(`/api/buffer/${route.params.tid}/states`)
+    fetch(`/api/buffer/states/${route.params.name}`)
     .then(response => {
         data.loading.states = false
         // console.log('Fetch buffer states response:', response)

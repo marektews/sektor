@@ -5,7 +5,7 @@ defineProps(['imagePath', 'label'])
 <template>
     <div class="card">
         <div class="card-body tile">
-            <img :src="imagePath" />
+            <img :src="imagePath" :alt="label || 'tile icon'" />
             <div class="label">
                 <slot />
             </div>
