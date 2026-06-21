@@ -16,6 +16,7 @@ export default defineConfig(({ command }) =>{
                     target: "http://localhost:1977/",
                     changeOrigin: true,
                     secure: false,
+                    ws: true, // proxy także połączeń WebSocket (/api/ws/odprawa)
                     rewrite: (path) => path.replace(/^\/api/, ''),
                 }
             }

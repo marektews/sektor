@@ -6,6 +6,7 @@ import Close from '@/components/CloseButton.vue'
 import BuforItem from './BuforItem.vue'
 import SectorsUsing from './SectorsUsing.vue'
 import LegendCtrl from '@/components/LegendCtrl.vue'
+import { useOdprawaSocket } from '@/composables/useOdprawaSocket.js'
 
 // DATA
 const data = reactive({
@@ -19,6 +20,7 @@ const data = reactive({
 
 const route = useRoute()
 const timer = ref(null)
+let socket = null
 
 const sectors_states = computed(() => {
     let tmp = {}
@@ -47,11 +49,18 @@ onMounted(() => {
     // pobieranie statycznego info
     load_static_info()
 
-    // pobieranie aktualnych stanów
+    // główny kanał: WebSocket (subskrypcja całego terminala); rekoncyliacja po (re)połączeniu
+    socket = useOdprawaSocket(
+        [`buffer:${route.params.name}`],
+        apply_notification_response,
+        load_states
+    )
+
+    // siatka bezpieczeństwa: wolny polling tylko gdy WS jest rozłączony
     timer.value = setInterval(() => {
-        if(!data.loading.states)
+        if(!socket.isConnected.value && !data.loading.states)
             load_states()
-    }, 20000)
+    }, 60000)
     load_states()
 })
 
@@ -59,6 +68,10 @@ onBeforeUnmount(() => {
     if(timer.value != null) {
         clearInterval(timer.value)
         timer.value = null
+    }
+    if(socket != null) {
+        socket.close()
+        socket = null
     }
 })
 

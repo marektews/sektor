@@ -7,6 +7,7 @@ import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
 import CloseButton from '@/components/CloseButton.vue'
 import SectorItem from './SectorItem.vue'
 import LegendCtrl from '@/components/LegendCtrl.vue'
+import { useOdprawaSocket } from '@/composables/useOdprawaSocket.js'
 
 // DATA
 const data = reactive({
@@ -20,6 +21,7 @@ const data = reactive({
 
 const route = useRoute()
 const timer = ref(null)
+let socket = null
 
 const sector_name = computed(() => data.info?.name.replace('x',''))
 
@@ -27,11 +29,18 @@ onMounted(() => {
     // pobieranie statycznego info
     load_static_info()
 
-    // pobieranie aktualnych stanów
+    // główny kanał: WebSocket; po (re)połączeniu rekoncyliacja pełnym fetchem stanów
+    socket = useOdprawaSocket(
+        [`sector:${route.params.sid}`],
+        apply_notification_response,
+        load_states
+    )
+
+    // siatka bezpieczeństwa: wolny polling tylko gdy WS jest rozłączony
     timer.value = setInterval(() => {
-        if(!data.loading.states)
+        if(!socket.isConnected.value && !data.loading.states)
             load_states()
-    }, 20000)
+    }, 60000)
     load_states()
 })
 
@@ -39,6 +48,10 @@ onBeforeUnmount(() => {
     if(timer.value != null) {
         clearInterval(timer.value)
         timer.value = null
+    }
+    if(socket != null) {
+        socket.close()
+        socket = null
     }
 })
 
