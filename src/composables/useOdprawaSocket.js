@@ -17,9 +17,11 @@ export function useOdprawaSocket(topics, onState, onReconnect) {
     let closedByUser = false
     let reconnectTimer = null
     let pingTimer = null
+    let pongTimer = null
     let attempt = 0
 
     const backoff = [1000, 2000, 5000, 10000] // ms
+    const pongWait = 10000 // ms — brak pong w tym czasie => połączenie uznajemy za martwe
 
     function url() {
         const proto = location.protocol === 'https:' ? 'wss' : 'ws'
@@ -50,6 +52,10 @@ export function useOdprawaSocket(topics, onState, onReconnect) {
             } catch {
                 return
             }
+            if (msg.type === 'pong') {
+                clearPong()
+                return
+            }
             if (msg.type === 'state' && onState) {
                 onState({ rja_id: msg.rja_id, status: msg.status, ts: msg.ts })
             }
@@ -75,7 +81,24 @@ export function useOdprawaSocket(topics, onState, onReconnect) {
 
     function startPing() {
         stopPing()
-        pingTimer = setInterval(() => send({ type: 'ping' }), 25000)
+        pingTimer = setInterval(() => {
+            send({ type: 'ping' })
+            // jeśli serwer nie odpowie pongiem w pongWait, uznajemy połączenie za martwe
+            // (np. półotwarty TCP) i zamykamy je — onclose wyzwoli reconnect
+            clearPong()
+            pongTimer = setTimeout(() => {
+                pongTimer = null
+                console.warn('WS: brak pong w czasie — zamykam połączenie')
+                if (ws) ws.close()
+            }, pongWait)
+        }, 25000)
+    }
+
+    function clearPong() {
+        if (pongTimer != null) {
+            clearTimeout(pongTimer)
+            pongTimer = null
+        }
     }
 
     function stopPing() {
@@ -83,6 +106,7 @@ export function useOdprawaSocket(topics, onState, onReconnect) {
             clearInterval(pingTimer)
             pingTimer = null
         }
+        clearPong()
     }
 
     function scheduleReconnect() {
