@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { url_buffer_icon } from '@/assets/helper.js'
 import Close from '@/components/CloseButton.vue'
@@ -20,7 +20,18 @@ const data = reactive({
 
 const route = useRoute()
 const timer = ref(null)
+const sort_mode = ref(localStorage.getItem('bufor-sort-mode') === 'sektor' ? 'sektor' : 'godzina')
+watch(sort_mode, (nv) => localStorage.setItem('bufor-sort-mode', nv))
 let socket = null
+
+const sorted_buses = computed(() => {
+    let buses = [...(data.info.buses ?? [])]
+    if(sort_mode.value === 'sektor')
+        buses.sort((a, b) => a.sector.name.localeCompare(b.sector.name, undefined, { numeric: true }) || a.arrive.localeCompare(b.arrive))
+    else
+        buses.sort((a, b) => a.arrive.localeCompare(b.arrive))
+    return buses
+})
 
 const sectors_states = computed(() => {
     let tmp = {}
@@ -157,9 +168,18 @@ function apply_notification_response(json) {
             <SectorsUsing :using="sectors_using" />
         </div>
 
+        <div class="sort-layout">
+            <span>Sortowanie:</span>
+            <div class="btn-group btn-group-sm" role="group">
+                <input type="radio" class="btn-check" name="sort" id="sort-godzina" value="godzina" v-model="sort_mode">
+                <label class="btn btn-outline-primary" for="sort-godzina">Godzina</label>
+                <input type="radio" class="btn-check" name="sort" id="sort-sektor" value="sektor" v-model="sort_mode">
+                <label class="btn btn-outline-primary" for="sort-sektor">Sektor</label>
+            </div>
+        </div>
+
         <div class="accordion" id="accordionRoot">
-            <BuforItem v-for="(item, index) in data.info.buses" :key="index"
-                :index="index"
+            <BuforItem v-for="item in sorted_buses" :key="item.id"
                 :info="item"
                 :state="data.states[item.id]"
                 :sector-used="sectors_using[item.sector.name.replace('x','')]"
@@ -187,6 +207,14 @@ header {
 .sectors-brief {
     margin: 4pt 0;
     display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sort-layout {
+    margin: 4pt 0 8pt;
+    display: flex;
+    gap: 8pt;
     align-items: center;
     justify-content: center;
 }

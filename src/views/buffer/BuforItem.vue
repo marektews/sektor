@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCircleQuestion, faBus, faArrowRotateRight, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import StatusLed from '@/components/StatusLed.vue'
 
-const props = defineProps(['index', 'info', 'state', 'sectorUsed'])
+const props = defineProps(['info', 'state', 'sectorUsed'])
 const emit = defineEmits(['notification'])
 
 const congregation_name = computed(() => {
@@ -103,9 +103,9 @@ function format_state(state) {
                 class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse" 
-                :data-bs-target="`#collapse${index}`"
-                aria-expanded="false" 
-                :aria-controls="`collapse${index}`"
+                :data-bs-target="`#collapse${info.id}`"
+                aria-expanded="false"
+                :aria-controls="`collapse${info.id}`"
             >
                 <div class="buffer-item-body" :class="{'text-muted' : status==='on-the-road'}">
                     <template v-if="status==='on-the-road'">
@@ -123,7 +123,7 @@ function format_state(state) {
                 </div>
             </button>
         </div>
-        <div class="accordion-collapse collapse" :id="`collapse${index}`" data-bs-parent="#accordionRoot">
+        <div class="accordion-collapse collapse" :id="`collapse${info.id}`" data-bs-parent="#accordionRoot">
             <div class="collapse-layout">
                 <div class="states-layout">
                     <div>Planowy odjazd: <strong>{{ info?.departure }}</strong></div>
