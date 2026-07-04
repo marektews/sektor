@@ -116,7 +116,7 @@ const showBtnReadyToLeave = computed(() => {
 
 const showBtnError2 = computed(() => {
     let s = props.state?.status
-    return s === 'ready-to-leave'
+    return s === 'ready-to-leave' || s === 'on-the-road'
 })
 
 const showBtnOnTheRoad = computed(() => {
